@@ -11,7 +11,7 @@ from typing import Dict, List, Tuple
 import grpc
 from google.protobuf import empty_pb2
 
-# Ensure imports from this folder
+
 sys.path.append(os.path.dirname(__file__))
 
 import printing_pb2
@@ -35,7 +35,7 @@ class MutualExclusionServicer(printing_pb2_grpc.MutualExclusionServiceServicer):
         self.node = node
 
     def RequestAccess(self, request, context):
-        # Update Lamport clock
+        
         self.node.clock.on_receive(request.lamport_timestamp)
 
         with self.node.lock:
@@ -53,9 +53,9 @@ class MutualExclusionServicer(printing_pb2_grpc.MutualExclusionServiceServicer):
                     f"[Client {self.node.id}] Deferring to {request.client_id} (ts={request.lamport_timestamp}) state={self.node.state}"
                 )
 
-        # If deferred, wait until release; otherwise fall through and grant
+        
         if defer:
-            ev.wait()  # released
+            ev.wait()  
 
         ts = self.node.clock.on_send()
         return printing_pb2.AccessResponse(access_granted=True, lamport_timestamp=ts)
@@ -91,24 +91,24 @@ class ClientNode:
         self._rng = random.Random()
 
     def start(self):
-        # Start MutualExclusionService server
+        
         self._server = grpc.server(futures.ThreadPoolExecutor(max_workers=16))
         printing_pb2_grpc.add_MutualExclusionServiceServicer_to_server(MutualExclusionServicer(self), self._server)
         self._server.add_insecure_port(f"[::]:{self.port}")
         self._server.start()
         print(f"[Client {self.id}] MutualExclusionService on port {self.port}")
 
-        # Setup printer stub
+        
         self._printer_channel = grpc.insecure_channel(self.printer_target)
         self._printer_stub = printing_pb2_grpc.PrintingServiceStub(self._printer_channel)
 
-        # Setup peers
+        
         for target in self.peer_targets:
             ch = grpc.insecure_channel(target)
             self._peer_channels[target] = ch
             self._peer_stubs[target] = printing_pb2_grpc.MutualExclusionServiceStub(ch)
 
-        # Background generator thread
+        
         t = threading.Thread(target=self._auto_print_loop, daemon=True)
         t.start()
 
@@ -125,7 +125,7 @@ class ClientNode:
                 print(f"[Client {self.id}] Error in print loop: {e}")
 
     def has_priority_over(self, other_id: int, other_ts: int) -> bool:
-        # Return True if THIS NODE has priority (smaller ts, then smaller id)
+        
         if self.current_req_ts < other_ts:
             return True
         if self.current_req_ts > other_ts:
@@ -143,17 +143,17 @@ class ClientNode:
 
         req = printing_pb2.AccessRequest(client_id=self.id, lamport_timestamp=ts, request_number=reqnum)
 
-        # Send RequestAccess to all peers (blocking until each grants)
+        
         for target, stub in self._peer_stubs.items():
             resp = stub.RequestAccess(req)
             self.clock.on_receive(resp.lamport_timestamp)
 
-        # Enter CS
+        
         with self.lock:
             self.state = State.HELD
             print(f"[Client {self.id}] Entering CS ts={self.clock.value}")
 
-        # Send to printer
+        
         presp = self._printer_stub.SendToPrinter(
             printing_pb2.PrintRequest(
                 client_id=self.id,
@@ -165,7 +165,7 @@ class ClientNode:
         self.clock.on_receive(presp.lamport_timestamp)
         print(f"[Client {self.id}] Printed OK: {presp.confirmation_message}")
 
-        # Exit CS: grant all deferred requests
+        
         with self.lock:
             self.state = State.RELEASED
             to_release = list(self.deferred)
@@ -173,7 +173,7 @@ class ClientNode:
         for d in to_release:
             d.event.set()
 
-        # Broadcast release (for visibility)
+        
         rel = printing_pb2.AccessRelease(
             client_id=self.id, lamport_timestamp=self.clock.on_send(), request_number=reqnum
         )
