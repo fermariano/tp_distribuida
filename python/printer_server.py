@@ -1,0 +1,52 @@
+import argparse
+import random
+import sys
+import time
+from concurrent import futures
+
+import grpc
+
+# Ensure local imports work when run from repo root
+import os
+sys.path.append(os.path.dirname(__file__))
+
+import printing_pb2
+import printing_pb2_grpc
+
+
+class PrintingService(printing_pb2_grpc.PrintingServiceServicer):
+    def __init__(self) -> None:
+        self._rng = random.Random()
+
+    def SendToPrinter(self, request, context):
+        ts = request.lamport_timestamp
+        cid = request.client_id
+        msg = request.message_content
+        print(f"[TS: {ts}] CLIENTE {cid}: {msg}")
+        time.sleep(2 + self._rng.randrange(0, 2))
+        return printing_pb2.PrintResponse(
+            success=True,
+            confirmation_message=f"Printed at {int(time.time())}",
+            lamport_timestamp=ts,
+        )
+
+
+def serve(port: int) -> None:
+    server = grpc.server(futures.ThreadPoolExecutor(max_workers=8))
+    printing_pb2_grpc.add_PrintingServiceServicer_to_server(PrintingService(), server)
+    server.add_insecure_port(f"[::]:{port}")
+    server.start()
+    print(f"[Printer] Listening on port {port}")
+    server.wait_for_termination()
+
+
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--port", type=int, default=50051)
+    args = parser.parse_args()
+    serve(args.port)
+
+
+if __name__ == "__main__":
+    main()
+

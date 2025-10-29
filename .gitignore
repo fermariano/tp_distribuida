@@ -1,0 +1,19 @@
+# Gradle / Java
+.gradle/
+build/
+out/
+*.iml
+.idea/
+.vscode/
+
+# Python
+__pycache__/
+*.pyc
+.pytest_cache/
+.venv/
+venv/
+
+# OS junk
+.DS_Store
+Thumbs.db
+
