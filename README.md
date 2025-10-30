@@ -53,6 +53,7 @@ scripts\run_client_py.bat 2 50053 localhost:50051 localhost:50052,localhost:5005
 ```
 scripts\run_client_py.bat 3 50054 localhost:50051 localhost:50052,localhost:50053
 ```
+ATENÇÃO! Prof pode ser que dê um errinho quando começar a iniciar os clientes porque pra funcionar certinho precisa iniciar todos ok... mas só iniciar todos que funciona ta...
 
 ## Como funciona
 
