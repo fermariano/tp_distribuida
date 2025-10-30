@@ -25,15 +25,10 @@ if _version_not_supported:
 
 
 class PrintingServiceStub(object):
-    """Serviço para o servidor de impressão BURRO (implementado no servidor)
-    """
+    # serviço do servidor burrao
 
     def __init__(self, channel):
-        """Constructor.
-
-        Args:
-            channel: A grpc.Channel.
-        """
+        
         self.SendToPrinter = channel.unary_unary(
                 '/distributed_printing.PrintingService/SendToPrinter',
                 request_serializer=printing__pb2.PrintRequest.SerializeToString,
@@ -42,17 +37,16 @@ class PrintingServiceStub(object):
 
 
 class PrintingServiceServicer(object):
-    """Serviço para o servidor de impressão BURRO (implementado no servidor)
-    """
+    
 
     def SendToPrinter(self, request, context):
-        """Missing associated documentation comment in .proto file."""
+        
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
 
-def add_PrintingServiceServicer_to_server(servicer, server):
+def add_PrintingServiceServicer_to_server(servicer, server): # service servicer to server service serverasjmfklasfm
     rpc_method_handlers = {
             'SendToPrinter': grpc.unary_unary_rpc_method_handler(
                     servicer.SendToPrinter,
@@ -66,10 +60,9 @@ def add_PrintingServiceServicer_to_server(servicer, server):
     server.add_registered_method_handlers('distributed_printing.PrintingService', rpc_method_handlers)
 
 
- # This class is part of an EXPERIMENTAL API.
+ 
 class PrintingService(object):
-    """Serviço para o servidor de impressão BURRO (implementado no servidor)
-    """
+    
 
     @staticmethod
     def SendToPrinter(request,
@@ -100,15 +93,10 @@ class PrintingService(object):
 
 
 class MutualExclusionServiceStub(object):
-    """Serviço para comunicação entre CLIENTES (implementado nos clientes)
-    """
+    
 
     def __init__(self, channel):
-        """Constructor.
-
-        Args:
-            channel: A grpc.Channel.
-        """
+        
         self.RequestAccess = channel.unary_unary(
                 '/distributed_printing.MutualExclusionService/RequestAccess',
                 request_serializer=printing__pb2.AccessRequest.SerializeToString,
@@ -122,17 +110,16 @@ class MutualExclusionServiceStub(object):
 
 
 class MutualExclusionServiceServicer(object):
-    """Serviço para comunicação entre CLIENTES (implementado nos clientes)
-    """
+    
 
     def RequestAccess(self, request, context):
-        """Missing associated documentation comment in .proto file."""
+        
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def ReleaseAccess(self, request, context):
-        """Missing associated documentation comment in .proto file."""
+        
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
@@ -157,10 +144,9 @@ def add_MutualExclusionServiceServicer_to_server(servicer, server):
     server.add_registered_method_handlers('distributed_printing.MutualExclusionService', rpc_method_handlers)
 
 
- # This class is part of an EXPERIMENTAL API.
+ 
 class MutualExclusionService(object):
-    """Serviço para comunicação entre CLIENTES (implementado nos clientes)
-    """
+    
 
     @staticmethod
     def RequestAccess(request,

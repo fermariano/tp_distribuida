@@ -63,15 +63,12 @@ class MutualExclusionServicer(printing_pb2_grpc.MutualExclusionServiceServicer):
 
     def ReleaseAccess(self, request, context):
         self.node.clock.on_receive(request.lamport_timestamp)
-        print(
-            f"[Client {self.node.id}] Peer {request.client_id} released (req#{request.request_number}) ts={request.lamport_timestamp}"
-        )
+        print(f"[Client {self.node.id}] Peer {request.client_id} released (req#{request.request_number}) ts={request.lamport_timestamp}")
         return empty_pb2.Empty()
 
 
 class ClientNode:
-    def __init__(
-        self, id_: int, port: int, printer_target: str, peer_targets: List[str]
+    def __init__(self, id_: int, port: int, printer_target: str, peer_targets: List[str]
     ) -> None:
         self.id = id_
         self.port = port

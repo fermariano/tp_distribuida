@@ -22,7 +22,7 @@ DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x0eprinting.proto
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
 _builder.BuildTopDescriptorsAndMessages(DESCRIPTOR, 'printing_pb2', _globals)
-if not _descriptor._USE_C_DESCRIPTORS:
+if not _descriptor._USE_C_DESCRIPTORS: # que LOUCURA é essa meu deus
   DESCRIPTOR._loaded_options = None
   _globals['_PRINTREQUEST']._serialized_start=69
   _globals['_PRINTREQUEST']._serialized_end=178
@@ -38,4 +38,4 @@ if not _descriptor._USE_C_DESCRIPTORS:
   _globals['_PRINTINGSERVICE']._serialized_end=621
   _globals['_MUTUALEXCLUSIONSERVICE']._serialized_start=624
   _globals['_MUTUALEXCLUSIONSERVICE']._serialized_end=818
-# @@protoc_insertion_point(module_scope)
+

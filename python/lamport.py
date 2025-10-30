@@ -5,7 +5,7 @@ class LamportClock:
         self._value = 0
         self._lock = Lock()
 
-    def tick(self) -> int:
+    def tick(self) -> int: #tick..... tok
         with self._lock:
             self._value += 1
             return self._value
