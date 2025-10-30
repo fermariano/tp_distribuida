@@ -3,16 +3,12 @@ import random
 import sys
 import time
 from concurrent import futures
-
-import grpc
-
-# Ensure local imports work when run from repo root
-import os
-sys.path.append(os.path.dirname(__file__))
-
 import printing_pb2
 import printing_pb2_grpc
+import grpc
+import os
 
+sys.path.append(os.path.dirname(__file__))
 
 class PrintingService(printing_pb2_grpc.PrintingServiceServicer):
     def __init__(self) -> None:
@@ -30,7 +26,6 @@ class PrintingService(printing_pb2_grpc.PrintingServiceServicer):
             lamport_timestamp=ts,
         )
 
-
 def serve(port: int) -> None:
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=8))
     printing_pb2_grpc.add_PrintingServiceServicer_to_server(PrintingService(), server)
@@ -39,13 +34,11 @@ def serve(port: int) -> None:
     print(f"[Printer] Listening on port {port}")
     server.wait_for_termination()
 
-
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--port", type=int, default=50051)
     args = parser.parse_args()
     serve(args.port)
-
 
 if __name__ == "__main__":
     main()

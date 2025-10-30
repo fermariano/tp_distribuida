@@ -1,6 +1,5 @@
 from threading import Lock
 
-
 class LamportClock:
     def __init__(self) -> None:
         self._value = 0
